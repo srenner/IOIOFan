@@ -1,6 +1,7 @@
 package com.srenner.ioiofan;
 
 import ioio.lib.api.DigitalInput.Spec;
+import ioio.lib.api.DigitalOutput;
 import ioio.lib.api.PulseInput;
 import ioio.lib.api.PulseInput.ClockRate;
 import ioio.lib.api.PulseInput.PulseMode;
@@ -47,16 +48,13 @@ public class MainActivity extends IOIOActivity {
 			}
 
 			@Override
-			public void onStartTrackingTouch(SeekBar arg0) {
-				// TODO Auto-generated method stub
-				
+			public void onStartTrackingTouch(SeekBar seekBar) {
+			}
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
 			}
 
-			@Override
-			public void onStopTrackingTouch(SeekBar arg0) {
-				// TODO Auto-generated method stub
-				
-			}});
+		});
 	}
 
 	@Override
@@ -79,9 +77,9 @@ public class MainActivity extends IOIOActivity {
 	 * be called repetitively until the IOIO gets disconnected.
 	 */
 	class Looper extends BaseIOIOLooper {
-		/** The on-board LED. */
 		private PwmOutput mPWM;
 		private PulseInput mTachSignal;
+		private DigitalOutput mLED;
 
 		/**
 		 * Called every time a connection with IOIO has been established.
@@ -97,6 +95,7 @@ public class MainActivity extends IOIOActivity {
 			mPWM = ioio_.openPwmOutput(PIN_PWM, 25000);
 			Spec s = new Spec(PIN_RPM);
 			mTachSignal = ioio_.openPulseInput(s, ClockRate.RATE_62KHz, PulseMode.FREQ, true);
+			mLED = ioio_.openDigitalOutput(0, false);
 		}
 
 		/**
@@ -110,12 +109,23 @@ public class MainActivity extends IOIOActivity {
 		@Override
 		public void loop()  {
 			try {
+				mLED.write(true);
 				int val = mSeekPWM.getProgress();
 				mPWM.setPulseWidth(val);
 				//signal goes high twice per rotation. multiply by 30 to get RPM
-				float myBoat = mTachSignal.getFrequency() * 30;
-				mTvRPM.setText(String.valueOf(myBoat));
+				final float myBoat = mTachSignal.getFrequency() * 30;
 				
+				runOnUiThread(new Runnable(){
+				    public void run(){
+				    	mTvRPM.setText(String.valueOf(myBoat));
+				    }
+				});
+				
+				
+				
+				//mTvRPM.setText(String.valueOf(myBoat));
+				
+				mLED.write(false);
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
 			} catch (ConnectionLostException e) {
