@@ -113,7 +113,7 @@ public class MainActivity extends IOIOActivity {
 				int val = mSeekPWM.getProgress();
 				mPWM.setPulseWidth(val);
 				//signal goes high twice per rotation. multiply by 30 to get RPM
-				final int rpm = (int)mTachSignal.getFrequency() * 30;
+				final int rpm = Math.round(mTachSignal.getFrequency() * 30);
 				
 				runOnUiThread(new Runnable(){
 				    public void run(){
