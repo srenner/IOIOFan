@@ -109,23 +109,18 @@ public class MainActivity extends IOIOActivity {
 		@Override
 		public void loop()  {
 			try {
-				mLED.write(true);
+				
 				int val = mSeekPWM.getProgress();
 				mPWM.setPulseWidth(val);
 				//signal goes high twice per rotation. multiply by 30 to get RPM
-				final float myBoat = mTachSignal.getFrequency() * 30;
+				final int rpm = (int)mTachSignal.getFrequency() * 30;
 				
 				runOnUiThread(new Runnable(){
 				    public void run(){
-				    	mTvRPM.setText(String.valueOf(myBoat));
+				    	mTvRPM.setText(String.valueOf(rpm));
 				    }
 				});
 				
-				
-				
-				//mTvRPM.setText(String.valueOf(myBoat));
-				
-				mLED.write(false);
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
 			} catch (ConnectionLostException e) {
