@@ -26,7 +26,7 @@ public class MainActivity extends IOIOActivity {
 	protected int mPWMValue;
 	
 	protected static int PIN_PWM = 1;
-	protected static int PIN_RPM = 2;
+	protected static int PIN_RPM = 3;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +36,6 @@ public class MainActivity extends IOIOActivity {
 		mSeekPWM = (SeekBar)findViewById(R.id.seekPWM);
 		mTvPWM = (TextView)findViewById(R.id.tvPWM);
 		mTvPWM.setText("0%");
-		
 		mTvRPM = (TextView)findViewById(R.id.tvRPM);
 		
 		mTvMessages = (TextView)findViewById(R.id.tvMessages);
@@ -45,7 +44,6 @@ public class MainActivity extends IOIOActivity {
 
 			@Override
 			public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2) {
-				// TODO Auto-generated method stub
 				mTvPWM.setText(String.valueOf(mSeekPWM.getProgress()) + "%");
 				mPWMValue = mSeekPWM.getProgress();
 			}
@@ -100,14 +98,8 @@ public class MainActivity extends IOIOActivity {
 		@Override
 		protected void setup() throws ConnectionLostException {
 			mPWM = ioio_.openPwmOutput(PIN_PWM, 25000);
-			
-			
-			
-			//mTachSignal = ioio_.openPulseInput(PIN_RPM, PulseMode.FREQ);
 			Spec s = new Spec(PIN_RPM);
-			mTachSignal = ioio_.openPulseInput(s, ClockRate.RATE_16MHz, PulseMode.FREQ, true);
-			
-			//mTachSignal.waitPulseGetDuration()
+			mTachSignal = ioio_.openPulseInput(s, ClockRate.RATE_62KHz, PulseMode.FREQ, true);
 		}
 
 		/**
@@ -123,12 +115,9 @@ public class MainActivity extends IOIOActivity {
 			try {
 				int val = mSeekPWM.getProgress();
 				mPWM.setPulseWidth(val);
-				
-				
-				float myBoat = mTachSignal.getFrequency();
-				
+				//signal goes high twice per rotation. multiply by 30 to get RPM
+				float myBoat = mTachSignal.getFrequency() * 30;
 				mTvRPM.setText(String.valueOf(myBoat));
-				
 				
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
@@ -147,5 +136,4 @@ public class MainActivity extends IOIOActivity {
 	protected IOIOLooper createIOIOLooper() {
 		return new Looper();
 	}
-
 }
