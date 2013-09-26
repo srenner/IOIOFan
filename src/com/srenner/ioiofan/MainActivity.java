@@ -1,8 +1,6 @@
 package com.srenner.ioiofan;
 
-import ioio.lib.api.DigitalInput;
 import ioio.lib.api.DigitalInput.Spec;
-import ioio.lib.api.DigitalOutput;
 import ioio.lib.api.PulseInput;
 import ioio.lib.api.PulseInput.ClockRate;
 import ioio.lib.api.PulseInput.PulseMode;
@@ -82,7 +80,6 @@ public class MainActivity extends IOIOActivity {
 	 */
 	class Looper extends BaseIOIOLooper {
 		/** The on-board LED. */
-		private DigitalOutput mLED;
 		private PwmOutput mPWM;
 		private PulseInput mTachSignal;
 
