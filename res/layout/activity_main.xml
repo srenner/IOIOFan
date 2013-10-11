@@ -36,13 +36,13 @@
         android:text="0 RPM"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <TextView
-        android:id="@+id/tvMessages"
-        android:layout_width="fill_parent"
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/tvPWM"
-        android:layout_below="@+id/tvPWM"
-        android:layout_marginTop="50dp"
-        android:text="Messages..." />
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/tvRPM"
+        android:text="Calibrate" />
     
 </RelativeLayout>
