@@ -10,6 +10,7 @@ import ioio.lib.api.exception.ConnectionLostException;
 import ioio.lib.util.BaseIOIOLooper;
 import ioio.lib.util.IOIOLooper;
 import ioio.lib.util.android.IOIOActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.widget.SeekBar;
@@ -25,19 +26,16 @@ public class MainActivity extends IOIOActivity {
 	protected int mPWMValue;
 	
 	protected static int PIN_PWM = 1;
-	protected static int PIN_RPM = 3;
+	protected static int PIN_RPM = 2;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
 		mSeekPWM = (SeekBar)findViewById(R.id.seekPWM);
 		mTvPWM = (TextView)findViewById(R.id.tvPWM);
 		mTvPWM.setText("0%");
 		mTvRPM = (TextView)findViewById(R.id.tvRPM);
-		
-		mTvMessages = (TextView)findViewById(R.id.tvMessages);
 		mPWMValue = -1;
 		mSeekPWM.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
@@ -55,6 +53,7 @@ public class MainActivity extends IOIOActivity {
 			}
 
 		});
+		startService(new Intent(this, FanService.class));
 	}
 
 	@Override
