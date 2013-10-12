@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.view.Menu;
 import android.view.View;
@@ -20,10 +21,8 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
-    FanService mService;
-    boolean mBound = false;
-
-
+    protected FanService mService;
+    protected boolean mBound = false;
 	
 	protected SeekBar mSeekPWM;
 	protected TextView mTvPWM;
@@ -33,6 +32,22 @@ public class MainActivity extends Activity {
 	
 	protected static int PIN_PWM = 1;
 	protected static int PIN_RPM = 2;
+	
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                IBinder service) {
+            IOIOBinder binder = (IOIOBinder) service;
+            mService = binder.getService();
+            mBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            mBound = false;
+        }
+    };
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -65,38 +80,27 @@ public class MainActivity extends Activity {
 
 			@Override
 			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				
 				int rpm = mService.getRPM();
-				
-			}});
-		
+			}
+		});
 		
         Intent intent = new Intent(this, FanService.class);
         startService(intent);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        
+        
+        final Handler handler=new Handler();
+        handler.post(new Runnable(){
 
-		
+               @Override
+               public void run() {
+            	   if(mService != null) {
+            		   mTvRPM.setText(String.valueOf(mService.getRPM()));
+            	   }
+                   handler.postDelayed(this,500); // set time here to refresh textView
+               }
+           });
 	}
-	
-    /** Defines callbacks for service binding, passed to bindService() */
-    private ServiceConnection mConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName className,
-                IBinder service) {
-            // We've bound to LocalService, cast the IBinder and get LocalService instance
-            IOIOBinder binder = (IOIOBinder) service;
-            mService = binder.getService();
-            mBound = true;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-            mBound = false;
-        }
-    };
-
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
