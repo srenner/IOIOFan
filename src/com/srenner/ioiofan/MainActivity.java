@@ -1,16 +1,30 @@
 package com.srenner.ioiofan;
 
 
+import com.srenner.ioiofan.FanService.IOIOBinder;
+
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.view.Menu;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
+    FanService mService;
+    boolean mBound = false;
+
+
+	
 	protected SeekBar mSeekPWM;
 	protected TextView mTvPWM;
 	protected TextView mTvRPM;
@@ -45,8 +59,44 @@ public class MainActivity extends Activity {
 			}
 
 		});
-		startService(new Intent(this, FanService.class));
+		
+		Button btnCalibrate = (Button)findViewById(R.id.button1);
+		btnCalibrate.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				
+				int rpm = mService.getRPM();
+				
+			}});
+		
+		
+        Intent intent = new Intent(this, FanService.class);
+        startService(intent);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+
+		
 	}
+	
+    /** Defines callbacks for service binding, passed to bindService() */
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                IBinder service) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            IOIOBinder binder = (IOIOBinder) service;
+            mService = binder.getService();
+            mBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            mBound = false;
+        }
+    };
+
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

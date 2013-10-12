@@ -15,43 +15,51 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.os.Binder;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 
 public class FanService extends IOIOService {
 
+	private final IBinder mBinder = new IOIOBinder();
+	private int mCurrentRPM = 0;
+	private int mCurrentPWM = 20;
 	
 	@Override
-protected IOIOLooper createIOIOLooper() {
-	return new BaseIOIOLooper() {
-		private DigitalOutput mLED;
-		private PwmOutput mPWM;
-		private PulseInput mTachSignal;
+	protected IOIOLooper createIOIOLooper() {
+		return new BaseIOIOLooper() {
+			private DigitalOutput mLED;
+			private PwmOutput mPWM;
+			private PulseInput mTachSignal;
+	
+			@Override
+			protected void setup() throws ConnectionLostException, InterruptedException {
+				mPWM = ioio_.openPwmOutput(1, 25000);
+				Spec s = new Spec(2);
+				mTachSignal = ioio_.openPulseInput(s, ClockRate.RATE_62KHz, PulseMode.FREQ, true);
+				mLED = ioio_.openDigitalOutput(IOIO.LED_PIN);
+			}
+			
+			@Override
+			public void loop() throws ConnectionLostException, InterruptedException {
+				
+				
+				mPWM.setPulseWidth(mCurrentPWM);
+				mCurrentRPM = Math.round(mTachSignal.getFrequency() * 30);
+				
+				//flash LED to test that service is running
+				mLED.write(false);
+				Thread.sleep(500);
+				mLED.write(true);
+				Thread.sleep(500);
+			}
+		};
+	}
 
-		@Override
-		protected void setup() throws ConnectionLostException, InterruptedException {
-			mPWM = ioio_.openPwmOutput(1, 25000);
-			Spec s = new Spec(2);
-			mTachSignal = ioio_.openPulseInput(s, ClockRate.RATE_62KHz, PulseMode.FREQ, true);
-			mLED = ioio_.openDigitalOutput(IOIO.LED_PIN);
-		}
-		
-		@Override
-		public void loop() throws ConnectionLostException, InterruptedException {
-			
-			
-			mPWM.setPulseWidth(20);
-			final int rpm = Math.round(mTachSignal.getFrequency() * 30);
-			
-			//flash LED to test that service is running
-			mLED.write(false);
-			Thread.sleep(500);
-			mLED.write(true);
-			Thread.sleep(500);
-		}
-	};
-}
-
+	public int getRPM() {
+		return mCurrentRPM;
+	}
+	
 	@Override
 	public void onStart(Intent intent, int startId) {
 		super.onStart(intent, startId);
@@ -77,8 +85,15 @@ protected IOIOLooper createIOIOLooper() {
 		}
 	}	
 
-	@Override
-	public IBinder onBind(Intent arg0) {
-		return null;
-	} 
+    public class IOIOBinder extends Binder {
+        FanService getService() {
+            return FanService.this;
+        }
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        return mBinder;
+    }
+
 }
