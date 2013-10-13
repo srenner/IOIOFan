@@ -23,7 +23,7 @@ public class FanService extends IOIOService {
 
 	private final IBinder mBinder = new IOIOBinder();
 	private int mCurrentRPM = 0;
-	private int mCurrentPWM = 20;
+	private int mCurrentPWM = 0;
 	
 	@Override
 	protected IOIOLooper createIOIOLooper() {
@@ -58,6 +58,10 @@ public class FanService extends IOIOService {
 
 	public int getRPM() {
 		return mCurrentRPM;
+	}
+	
+	public void setPWM(int pwm) {
+		mCurrentPWM = pwm;
 	}
 	
 	@Override

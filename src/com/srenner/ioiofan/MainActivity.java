@@ -96,8 +96,9 @@ public class MainActivity extends Activity {
                public void run() {
             	   if(mService != null) {
             		   mTvRPM.setText(String.valueOf(mService.getRPM()));
+            		   mService.setPWM(mPWMValue);
             	   }
-                   handler.postDelayed(this,500); // set time here to refresh textView
+                   handler.postDelayed(this, 250);
                }
            });
 	}
