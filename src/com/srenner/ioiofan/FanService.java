@@ -35,23 +35,14 @@ public class FanService extends IOIOService {
 			@Override
 			protected void setup() throws ConnectionLostException, InterruptedException {
 				mPWM = ioio_.openPwmOutput(1, 25000);
-				Spec s = new Spec(2);
-				mTachSignal = ioio_.openPulseInput(s, ClockRate.RATE_62KHz, PulseMode.FREQ, true);
-				mLED = ioio_.openDigitalOutput(IOIO.LED_PIN);
+				mTachSignal = ioio_.openPulseInput(new Spec(2), ClockRate.RATE_62KHz, PulseMode.FREQ, true);
 			}
 			
 			@Override
 			public void loop() throws ConnectionLostException, InterruptedException {
-				
-				
 				mPWM.setPulseWidth(mCurrentPWM);
 				mCurrentRPM = Math.round(mTachSignal.getFrequency() * 30);
-				
-				//flash LED to test that service is running
-				mLED.write(false);
-				Thread.sleep(500);
-				mLED.write(true);
-				Thread.sleep(500);
+				Thread.sleep(100);
 			}
 		};
 	}

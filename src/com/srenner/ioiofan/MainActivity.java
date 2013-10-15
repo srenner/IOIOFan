@@ -89,7 +89,7 @@ public class MainActivity extends Activity {
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         
         
-        final Handler handler=new Handler();
+        final Handler handler = new Handler();
         handler.post(new Runnable(){
 
                @Override
