@@ -91,16 +91,15 @@ public class MainActivity extends Activity {
         
         final Handler handler = new Handler();
         handler.post(new Runnable(){
-
-               @Override
-               public void run() {
-            	   if(mService != null) {
-            		   mTvRPM.setText(String.valueOf(mService.getRPM()));
-            		   mService.setPWM(mPWMValue);
-            	   }
-                   handler.postDelayed(this, 250);
-               }
-           });
+           @Override
+           public void run() {
+        	   if(mService != null) {
+        		   mTvRPM.setText(String.valueOf(mService.getRPM()));
+        		   mService.setPWM(mPWMValue);
+        	   }
+               handler.postDelayed(this, 100);
+           }
+        });
 	}
 
 	@Override
