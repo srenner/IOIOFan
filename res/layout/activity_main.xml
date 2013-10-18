@@ -37,12 +37,21 @@
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/btnCalibrate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/btnExit"
         android:layout_alignLeft="@+id/tvPWM"
-        android:layout_alignParentBottom="true"
         android:layout_alignRight="@+id/tvRPM"
+        android:layout_marginBottom="15dp"
         android:text="Calibrate" />
-    
+
+    <Button
+        android:id="@+id/btnExit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/btnCalibrate"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/btnCalibrate"
+        android:text="Exit" />
 </RelativeLayout>

@@ -4,6 +4,7 @@ package com.srenner.ioiofan;
 import com.srenner.ioiofan.FanService.IOIOBinder;
 
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -40,6 +41,10 @@ public class MainActivity extends Activity {
                 IBinder service) {
             IOIOBinder binder = (IOIOBinder) service;
             mService = binder.getService();
+    		if(mService != null) {
+    			mPWMValue = mService.getPWM();
+    			mSeekPWM.setProgress(mPWMValue);
+    		}
             mBound = true;
         }
 
@@ -58,6 +63,14 @@ public class MainActivity extends Activity {
 		mTvPWM.setText("0%");
 		mTvRPM = (TextView)findViewById(R.id.tvRPM);
 		mPWMValue = -1;
+		
+		
+
+		
+		
+		//if(mSeekPWM.getProgress() > 0) {
+		//	mPWMValue = mSeekPWM.getProgress();
+		//}
 		mSeekPWM.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
 			@Override
@@ -75,19 +88,31 @@ public class MainActivity extends Activity {
 
 		});
 		
-		Button btnCalibrate = (Button)findViewById(R.id.button1);
+		Button btnCalibrate = (Button)findViewById(R.id.btnCalibrate);
 		btnCalibrate.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View arg0) {
-				int rpm = mService.getRPM();
+				
+			}
+		});
+		
+		Button btnExit = (Button)findViewById(R.id.btnExit);
+		btnExit.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				if(mService != null) {
+					mService.stopSelf();
+					NotificationManager nm = (NotificationManager)getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+					nm.cancel(0);
+				}
+				finish();
 			}
 		});
 		
         Intent intent = new Intent(this, FanService.class);
         startService(intent);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-        
         
         final Handler handler = new Handler();
         handler.post(new Runnable(){

@@ -55,6 +55,11 @@ public class FanService extends IOIOService {
 		mCurrentPWM = pwm;
 	}
 	
+	public int getPWM() {
+		return mCurrentPWM;
+	}
+	
+	
 	@Override
 	public void onStart(Intent intent, int startId) {
 		super.onStart(intent, startId);
@@ -68,12 +73,16 @@ public class FanService extends IOIOService {
 		else {
 			// Service starting. Create a notification.
 			
+			Intent i = new Intent(this, MainActivity.class);
+			PendingIntent pi = PendingIntent.getActivity(this, 0, i, 0);
+			
 			Notification notification = new NotificationCompat.Builder(this)
 			.setSmallIcon(R.drawable.ic_launcher)
-			.setContentTitle("IOIOFan Service")
-			.setContentText("Click to stop")
-			.setContentIntent(PendingIntent.getService(this, 0, new Intent(
-					"stop", null, this, this.getClass()), 0))
+			.setContentTitle("IOIOFan")
+			.setContentText("Tap to open")
+			//.setContentIntent(PendingIntent.getService(this, 0, new Intent(
+			//		"stop", null, this, this.getClass()), 0))
+					.setContentIntent(pi)
 			.build();
 			notification.flags |= Notification.FLAG_ONGOING_EVENT;
 			nm.notify(0, notification);
