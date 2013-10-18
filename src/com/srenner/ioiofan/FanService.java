@@ -1,7 +1,5 @@
 package com.srenner.ioiofan;
 
-import ioio.lib.api.DigitalOutput;
-import ioio.lib.api.IOIO;
 import ioio.lib.api.PulseInput;
 import ioio.lib.api.PwmOutput;
 import ioio.lib.api.DigitalInput.Spec;
@@ -28,7 +26,6 @@ public class FanService extends IOIOService {
 	@Override
 	protected IOIOLooper createIOIOLooper() {
 		return new BaseIOIOLooper() {
-			private DigitalOutput mLED;
 			private PwmOutput mPWM;
 			private PulseInput mTachSignal;
 	
@@ -59,7 +56,6 @@ public class FanService extends IOIOService {
 		return mCurrentPWM;
 	}
 	
-	
 	@Override
 	public void onStart(Intent intent, int startId) {
 		super.onStart(intent, startId);
@@ -72,17 +68,15 @@ public class FanService extends IOIOService {
 		} 
 		else {
 			// Service starting. Create a notification.
-			
 			Intent i = new Intent(this, MainActivity.class);
 			PendingIntent pi = PendingIntent.getActivity(this, 0, i, 0);
-			
 			Notification notification = new NotificationCompat.Builder(this)
 			.setSmallIcon(R.drawable.ic_launcher)
 			.setContentTitle("IOIOFan")
 			.setContentText("Tap to open")
 			//.setContentIntent(PendingIntent.getService(this, 0, new Intent(
 			//		"stop", null, this, this.getClass()), 0))
-					.setContentIntent(pi)
+			.setContentIntent(pi)
 			.build();
 			notification.flags |= Notification.FLAG_ONGOING_EVENT;
 			nm.notify(0, notification);
@@ -99,5 +93,4 @@ public class FanService extends IOIOService {
     public IBinder onBind(Intent intent) {
         return mBinder;
     }
-
 }

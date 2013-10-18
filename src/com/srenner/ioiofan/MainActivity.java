@@ -63,14 +63,6 @@ public class MainActivity extends Activity {
 		mTvPWM.setText("0%");
 		mTvRPM = (TextView)findViewById(R.id.tvRPM);
 		mPWMValue = -1;
-		
-		
-
-		
-		
-		//if(mSeekPWM.getProgress() > 0) {
-		//	mPWMValue = mSeekPWM.getProgress();
-		//}
 		mSeekPWM.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
 			@Override
@@ -87,13 +79,12 @@ public class MainActivity extends Activity {
 			}
 
 		});
-		
 		Button btnCalibrate = (Button)findViewById(R.id.btnCalibrate);
 		btnCalibrate.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View arg0) {
-				
+				// TODO call calibrate code from here
 			}
 		});
 		
@@ -138,7 +129,4 @@ public class MainActivity extends Activity {
 		TextView tv = (TextView)findViewById(textViewResourceID);
 		tv.setText(text);
 	}
-	
-
-
 }
