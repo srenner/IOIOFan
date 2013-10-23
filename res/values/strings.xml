@@ -3,6 +3,8 @@
 
     <string name="app_name">IOIOFan</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="rpm_initial_readout">O RPM</string>
+    <string name="btn_calibrate_text">Calibrate</string>
+    <string name="btn_exit_text">Exit</string>
 
 </resources>
