@@ -1,9 +1,6 @@
 package com.srenner.ioiofan;
 
-
 import com.srenner.ioiofan.FanService.IOIOBinder;
-
-import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -12,6 +9,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -20,7 +18,7 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
-public class MainActivity extends Activity {
+public class MainActivity extends FragmentActivity {
 
     protected FanService mService;
     protected boolean mBound = false;
@@ -58,6 +56,10 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		//final MainActivityData data = (MainActivityData)getLastNonConfigurationInstance();
+		
+		
 		mSeekPWM = (SeekBar)findViewById(R.id.seekPWM);
 		mTvPWM = (TextView)findViewById(R.id.tvPWM);
 		mTvPWM.setText("0%");
@@ -118,6 +120,13 @@ public class MainActivity extends Activity {
         });
 	}
 
+//	@Override
+//	public Object onRetainNonConfigurationInstance() {
+//		final MainActivityData data = new MainActivityData();
+//		data.setPWM(mPWMValue);
+//		return data;
+//	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.

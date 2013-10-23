@@ -8,48 +8,11 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
 
-    <SeekBar
-        android:id="@+id/seekPWM"
+    <fragment
+        android:id="@+id/main_control_fragment"
+        android:name="com.srenner.ioiofan.MainControlFragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_marginTop="16dp"
-        android:max="100" />
-
-    <TextView
-        android:id="@+id/tvPWM"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/seekPWM"
-        android:layout_below="@+id/seekPWM"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:layout_height="match_parent"
+        tools:layout="@layout/main_control" />
     
-    <TextView
-        android:id="@+id/tvRPM"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/tvPWM"
-        android:layout_alignBottom="@+id/tvPWM"
-        android:layout_alignRight="@+id/seekPWM"
-        android:text="@string/rpm_initial_readout"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <Button
-        android:id="@+id/btnCalibrate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/btnExit"
-        android:layout_alignLeft="@+id/tvPWM"
-        android:layout_alignRight="@+id/tvRPM"
-        android:layout_marginBottom="15dp"
-        android:text="@string/btn_calibrate_text" />
-
-    <Button
-        android:id="@+id/btnExit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/btnCalibrate"
-        android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/btnCalibrate"
-        android:text="@string/btn_exit_text" />
 </RelativeLayout>
