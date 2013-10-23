@@ -30,7 +30,8 @@
         </activity>
 	    <service
 	        android:name=".FanService"
-	        android:label="Fan Service" >
+	        android:label="Fan Service"
+	        android:exported="false" >
 				<intent-filter>
 					<action android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED" />
 				</intent-filter>
