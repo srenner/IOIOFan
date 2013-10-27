@@ -9,7 +9,10 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -57,8 +60,15 @@ public class MainActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		//final MainActivityData data = (MainActivityData)getLastNonConfigurationInstance();
 		
+		MainControlFragment fragment;
+		
+		if(savedInstanceState == null) {
+
+		}
+		else {
+			// configuration (orientation) change
+		}
 		
 		mSeekPWM = (SeekBar)findViewById(R.id.seekPWM);
 		mTvPWM = (TextView)findViewById(R.id.tvPWM);
@@ -119,13 +129,6 @@ public class MainActivity extends FragmentActivity {
            }
         });
 	}
-
-//	@Override
-//	public Object onRetainNonConfigurationInstance() {
-//		final MainActivityData data = new MainActivityData();
-//		data.setPWM(mPWMValue);
-//		return data;
-//	}
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -134,8 +137,4 @@ public class MainActivity extends FragmentActivity {
 		return true;
 	}
 	
-	public void setTextViewText(int textViewResourceID, String text) {
-		TextView tv = (TextView)findViewById(textViewResourceID);
-		tv.setText(text);
-	}
 }
