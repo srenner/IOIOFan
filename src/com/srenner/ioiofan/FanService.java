@@ -57,8 +57,18 @@ public class FanService extends IOIOService {
 	}
 	
 	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		handleStartup(intent);
+		return START_STICKY;
+	}
+	
+	@Override
 	public void onStart(Intent intent, int startId) {
 		super.onStart(intent, startId);
+		handleStartup(intent);
+	}	
+
+	private void handleStartup(Intent intent) {
 		NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		if (intent != null && intent.getAction() != null
 				&& intent.getAction().equals("stop")) {
@@ -78,9 +88,9 @@ public class FanService extends IOIOService {
 			.build();
 			notification.flags |= Notification.FLAG_ONGOING_EVENT;
 			nm.notify(0, notification);
-		}
-	}	
-
+		}		
+	}
+	
     public class IOIOBinder extends Binder {
         FanService getService() {
             return FanService.this;
