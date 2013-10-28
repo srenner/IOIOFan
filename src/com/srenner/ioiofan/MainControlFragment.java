@@ -83,27 +83,6 @@ public class MainControlFragment extends Fragment {
 			}
 
 		});
-		Button btnCalibrate = (Button)v.findViewById(R.id.btnCalibrate);
-		btnCalibrate.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View arg0) {
-				// TODO call calibrate code from here
-			}
-		});
-		
-		Button btnExit = (Button)v.findViewById(R.id.btnExit);
-		btnExit.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				if(mService != null) {
-					mService.stopSelf();
-					NotificationManager nm = (NotificationManager)getActivity().getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-					nm.cancel(0);
-				}
-				getActivity().finish();
-			}
-		});
 		
 		Context applicationContext = getActivity().getApplicationContext();
 		Intent intent = new Intent(applicationContext, FanService.class);
@@ -122,6 +101,34 @@ public class MainControlFragment extends Fragment {
 		       handler.postDelayed(this, 100);
 		   }
 		});
+		
+		Button btnCalibrate = (Button)v.findViewById(R.id.btnCalibrate);
+		btnCalibrate.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				// TODO call calibrate code from here
+			}
+		});
+		
+		Button btnExit = (Button)v.findViewById(R.id.btnExit);
+		btnExit.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				if(mService != null) {
+					mService.stopSelf();
+					
+					
+					
+					NotificationManager nm = (NotificationManager)getActivity().getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+					nm.cancel(0);
+				}
+				
+				getActivity().finish();
+			}
+		});
+		
+
 		
 		return v;
 	}

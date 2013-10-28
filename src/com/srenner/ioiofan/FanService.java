@@ -74,8 +74,6 @@ public class FanService extends IOIOService {
 			.setSmallIcon(R.drawable.ic_launcher)
 			.setContentTitle("IOIOFan")
 			.setContentText("Tap to open")
-			//.setContentIntent(PendingIntent.getService(this, 0, new Intent(
-			//		"stop", null, this, this.getClass()), 0))
 			.setContentIntent(pi)
 			.build();
 			notification.flags |= Notification.FLAG_ONGOING_EVENT;
