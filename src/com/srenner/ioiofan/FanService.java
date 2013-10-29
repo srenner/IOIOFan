@@ -58,6 +58,10 @@ public class FanService extends IOIOService {
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
+		
+		//call super.onStart because it starts the IOIOAndroidApplicationHelper 
+		//and super.onStartCommand is not implemented
+		super.onStart(intent, startId);
 		handleStartup(intent);
 		return START_STICKY;
 	}
