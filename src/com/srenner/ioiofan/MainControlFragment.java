@@ -2,7 +2,9 @@ package com.srenner.ioiofan;
 
 import com.srenner.ioiofan.FanService.IOIOBinder;
 
+import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,8 +42,13 @@ public class MainControlFragment extends Fragment {
             IOIOBinder binder = (IOIOBinder) service;
             mService = binder.getService();
     		if(mService != null) {
+    			try {
     			mPWMValue = mService.getPWM();
     			mSeekPWM.setProgress(mPWMValue);
+    			}
+    			catch(Exception ex) {
+    				String stop = "asdf";
+    			}
     		}
             mBound = true;
         }
@@ -55,7 +63,6 @@ public class MainControlFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        
     }
 	
 	@Override
@@ -86,9 +93,29 @@ public class MainControlFragment extends Fragment {
 		
 		Context applicationContext = getActivity().getApplicationContext();
 		Intent intent = new Intent(applicationContext, FanService.class);
+		//PendingIntent pi = PendingIntent.getActivity(this, 0, intent, 0);
+		PendingIntent pi = PendingIntent.getService(applicationContext, 0, intent, 0);
 		
-		applicationContext.startService(intent);
-		applicationContext.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+		try {
+			NotificationManager nm = (NotificationManager) applicationContext.getSystemService(Context.NOTIFICATION_SERVICE);
+			Notification notification = new NotificationCompat.Builder(applicationContext)
+			.setSmallIcon(R.drawable.ic_launcher)
+			.setContentTitle("IOIOFan")
+			.setContentText("Tap to open")
+			.setContentIntent(pi)
+			.build();
+			notification.flags |= Notification.FLAG_ONGOING_EVENT;
+			//nm.notify(1, notification);
+			
+			//mService.startForeground(1, notification);
+			
+			applicationContext.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+			applicationContext.startService(intent);
+			
+		}
+		catch(Exception ex) {
+			String stop = "asdf";
+		}
 		
 		final Handler handler = new Handler();
 		handler.post(new Runnable(){
@@ -116,19 +143,12 @@ public class MainControlFragment extends Fragment {
 			@Override
 			public void onClick(View arg0) {
 				if(mService != null) {
-					mService.stopSelf();
-					
-					
-					
-					NotificationManager nm = (NotificationManager)getActivity().getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-					nm.cancel(0);
+					mService.stopForeground(true);
+					//mService.stopSelf();
 				}
-				
 				getActivity().finish();
 			}
 		});
-		
-
 		
 		return v;
 	}

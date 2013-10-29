@@ -6,5 +6,6 @@
     <string name="rpm_initial_readout">O RPM</string>
     <string name="btn_calibrate_text">Calibrate</string>
     <string name="btn_exit_text">Exit</string>
-
+	<string name="service_stopped_text">Fan Service Stopping</string>
+    
 </resources>

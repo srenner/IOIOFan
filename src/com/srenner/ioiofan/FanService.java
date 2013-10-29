@@ -16,6 +16,7 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
+import android.widget.Toast;
 
 public class FanService extends IOIOService {
 
@@ -56,6 +57,11 @@ public class FanService extends IOIOService {
 		return mCurrentPWM;
 	}
 	
+	public void stop() {
+		stopForeground(true);
+		stopSelf();
+	}
+	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		
@@ -82,6 +88,10 @@ public class FanService extends IOIOService {
 		} 
 		else {
 			// Service starting. Create a notification.
+			
+			
+			//fragment already created notification
+			
 			Intent i = new Intent(this, MainActivity.class);
 			PendingIntent pi = PendingIntent.getActivity(this, 0, i, 0);
 			Notification notification = new NotificationCompat.Builder(this)
@@ -91,8 +101,16 @@ public class FanService extends IOIOService {
 			.setContentIntent(pi)
 			.build();
 			notification.flags |= Notification.FLAG_ONGOING_EVENT;
-			nm.notify(0, notification);
+			
+			startForeground(1, notification);
+			
+//			nm.notify(0, notification);
 		}		
+	}
+	
+	@Override
+	public void onDestroy() {
+		Toast.makeText(this, R.string.service_stopped_text, Toast.LENGTH_SHORT).show();
 	}
 	
     public class IOIOBinder extends Binder {
