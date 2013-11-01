@@ -23,6 +23,7 @@ public class FanService extends IOIOService {
 	private final IBinder mBinder = new IOIOBinder();
 	private int mCurrentRPM = 0;
 	private int mCurrentPWM = 0;
+	private LoopMode mLoopMode;
 	private boolean mDoStop = false;
 	
 	@Override
@@ -39,10 +40,21 @@ public class FanService extends IOIOService {
 			
 			@Override
 			public void loop() throws ConnectionLostException, InterruptedException {
-				mPWM.setPulseWidth(mCurrentPWM);
-				mCurrentRPM = Math.round(mTachSignal.getFrequency() * 30);
-				if(mDoStop) {
-					disconnected();
+				switch(mLoopMode) {
+					case CALIBRATE: {
+						// call calibration code here
+						break;
+					}
+					case NORMAL: {
+						// fall through
+					}
+					default: {
+						mPWM.setPulseWidth(mCurrentPWM);
+						mCurrentRPM = Math.round(mTachSignal.getFrequency() * 30);
+						if(mDoStop) {
+							disconnected();
+						}
+					}
 				}
 				Thread.sleep(100);
 			}
@@ -59,6 +71,14 @@ public class FanService extends IOIOService {
 	
 	public int getPWM() {
 		return mCurrentPWM;
+	}
+	
+	public LoopMode getLoopMode() {
+		return mLoopMode;
+	}
+
+	public void setLoopMode(LoopMode loopMode) {
+		mLoopMode = loopMode;
 	}
 	
 	public void stop() {
@@ -123,4 +143,6 @@ public class FanService extends IOIOService {
     public IBinder onBind(Intent intent) {
         return mBinder;
     }
+
+
 }

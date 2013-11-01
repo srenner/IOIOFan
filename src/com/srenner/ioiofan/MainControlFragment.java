@@ -45,6 +45,7 @@ public class MainControlFragment extends Fragment {
     			try {
 	    			mPWMValue = mService.getPWM();
 	    			mSeekPWM.setProgress(mPWMValue);
+	    			mService.setLoopMode(LoopMode.NORMAL);
     			}
     			catch(Exception ex) {
     			}
