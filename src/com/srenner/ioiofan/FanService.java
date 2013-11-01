@@ -23,6 +23,7 @@ public class FanService extends IOIOService {
 	private final IBinder mBinder = new IOIOBinder();
 	private int mCurrentRPM = 0;
 	private int mCurrentPWM = 0;
+	private boolean mDoStop = false;
 	
 	@Override
 	protected IOIOLooper createIOIOLooper() {
@@ -40,6 +41,9 @@ public class FanService extends IOIOService {
 			public void loop() throws ConnectionLostException, InterruptedException {
 				mPWM.setPulseWidth(mCurrentPWM);
 				mCurrentRPM = Math.round(mTachSignal.getFrequency() * 30);
+				if(mDoStop) {
+					disconnected();
+				}
 				Thread.sleep(100);
 			}
 		};
@@ -58,8 +62,9 @@ public class FanService extends IOIOService {
 	}
 	
 	public void stop() {
+		mDoStop = true;
 		stopForeground(true);
-		stopSelf();
+		//stopSelf();
 	}
 	
 	@Override
@@ -79,6 +84,7 @@ public class FanService extends IOIOService {
 	}	
 
 	private void handleStartup(Intent intent) {
+		Toast.makeText(this, "Service Starting", Toast.LENGTH_SHORT).show();
 		NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		if (intent != null && intent.getAction() != null
 				&& intent.getAction().equals("stop")) {
@@ -88,22 +94,16 @@ public class FanService extends IOIOService {
 		} 
 		else {
 			// Service starting. Create a notification.
-			
-			
-			//fragment already created notification
-			
 			Intent i = new Intent(this, MainActivity.class);
 			PendingIntent pi = PendingIntent.getActivity(this, 0, i, 0);
 			Notification notification = new NotificationCompat.Builder(this)
-			.setSmallIcon(R.drawable.ic_launcher)
-			.setContentTitle("IOIOFan")
-			.setContentText("Tap to open")
-			.setContentIntent(pi)
-			.build();
+				.setSmallIcon(R.drawable.ic_launcher)
+				.setContentTitle("IOIOFan")
+				.setContentText("Tap to open")
+				.setContentIntent(pi)
+				.build();
 			notification.flags |= Notification.FLAG_ONGOING_EVENT;
-			
 			startForeground(1, notification);
-			
 //			nm.notify(0, notification);
 		}		
 	}

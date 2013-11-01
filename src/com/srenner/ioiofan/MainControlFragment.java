@@ -43,11 +43,10 @@ public class MainControlFragment extends Fragment {
             mService = binder.getService();
     		if(mService != null) {
     			try {
-    			mPWMValue = mService.getPWM();
-    			mSeekPWM.setProgress(mPWMValue);
+	    			mPWMValue = mService.getPWM();
+	    			mSeekPWM.setProgress(mPWMValue);
     			}
     			catch(Exception ex) {
-    				String stop = "asdf";
     			}
     		}
             mBound = true;
@@ -97,7 +96,7 @@ public class MainControlFragment extends Fragment {
 		PendingIntent pi = PendingIntent.getService(applicationContext, 0, intent, 0);
 		
 		try {
-			NotificationManager nm = (NotificationManager) applicationContext.getSystemService(Context.NOTIFICATION_SERVICE);
+			//NotificationManager nm = (NotificationManager) applicationContext.getSystemService(Context.NOTIFICATION_SERVICE);
 			Notification notification = new NotificationCompat.Builder(applicationContext)
 			.setSmallIcon(R.drawable.ic_launcher)
 			.setContentTitle("IOIOFan")
@@ -106,15 +105,12 @@ public class MainControlFragment extends Fragment {
 			.build();
 			notification.flags |= Notification.FLAG_ONGOING_EVENT;
 			//nm.notify(1, notification);
-			
 			//mService.startForeground(1, notification);
-			
 			applicationContext.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 			applicationContext.startService(intent);
 			
 		}
 		catch(Exception ex) {
-			String stop = "asdf";
 		}
 		
 		final Handler handler = new Handler();
@@ -143,7 +139,8 @@ public class MainControlFragment extends Fragment {
 			@Override
 			public void onClick(View arg0) {
 				if(mService != null) {
-					mService.stopForeground(true);
+					//mService.stopForeground(true);
+					mService.stop();
 					//mService.stopSelf();
 				}
 				getActivity().finish();
