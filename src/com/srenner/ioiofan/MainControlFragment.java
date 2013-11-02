@@ -3,7 +3,6 @@ package com.srenner.ioiofan;
 import com.srenner.ioiofan.FanService.IOIOBinder;
 
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
@@ -132,6 +131,7 @@ public class MainControlFragment extends Fragment {
 			@Override
 			public void onClick(View arg0) {
 				// TODO call calibrate code from here
+				mService.setLoopMode(LoopMode.CALIBRATE);
 			}
 		});
 		

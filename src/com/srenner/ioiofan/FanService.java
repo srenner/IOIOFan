@@ -43,6 +43,7 @@ public class FanService extends IOIOService {
 				switch(mLoopMode) {
 					case CALIBRATE: {
 						// call calibration code here
+						mLoopMode = LoopMode.NORMAL;
 						break;
 					}
 					case NORMAL: {
