@@ -42,7 +42,7 @@ public class FanService extends IOIOService {
 			public void loop() throws ConnectionLostException, InterruptedException {
 				switch(mLoopMode) {
 					case CALIBRATE: {
-						// call calibration code here
+						calibrate();
 						mLoopMode = LoopMode.NORMAL;
 						break;
 					}
@@ -58,6 +58,21 @@ public class FanService extends IOIOService {
 					}
 				}
 				Thread.sleep(100);
+			}
+			
+			private void calibrate() {
+				try {
+					mPWM.setPulseWidth(0);
+					Thread.sleep(10000); // let RPM settle
+					
+					
+				} catch (ConnectionLostException e) {
+					// ioio lost connection
+					e.printStackTrace();
+				} catch (InterruptedException e) {
+					// sleep was interrupted
+					e.printStackTrace();
+				}
 			}
 		};
 	}
