@@ -1,5 +1,7 @@
 package com.srenner.ioiofan;
 
+import javax.xml.datatype.Duration;
+
 import ioio.lib.api.PulseInput;
 import ioio.lib.api.PwmOutput;
 import ioio.lib.api.DigitalInput.Spec;
@@ -14,6 +16,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
@@ -25,6 +28,7 @@ public class FanService extends IOIOService {
 	private int mCurrentPWM = 0;
 	private LoopMode mLoopMode;
 	private boolean mDoStop = false;
+	private Handler mHandler;
 	
 	@Override
 	protected IOIOLooper createIOIOLooper() {
@@ -63,7 +67,17 @@ public class FanService extends IOIOService {
 			private void calibrate() {
 				try {
 					mPWM.setPulseWidth(0);
-					Thread.sleep(10000); // let RPM settle
+
+					final int settleDuration = 10000;
+					
+					mHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							Toast.makeText(FanService.this, "Wait for fan to settle", Toast.LENGTH_LONG).show();
+						}
+					});
+					
+					Thread.sleep(settleDuration); // let RPM settle
 					
 					
 				} catch (ConnectionLostException e) {
@@ -120,6 +134,7 @@ public class FanService extends IOIOService {
 	}	
 
 	private void handleStartup(Intent intent) {
+		mHandler = new Handler();
 		Toast.makeText(this, "Service Starting", Toast.LENGTH_SHORT).show();
 		NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		if (intent != null && intent.getAction() != null
