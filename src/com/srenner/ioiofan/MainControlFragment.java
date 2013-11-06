@@ -30,7 +30,7 @@ public class MainControlFragment extends Fragment {
 	protected SeekBar mSeekPWM;
 	protected TextView mTvPWM;
 	protected TextView mTvRPM;
-	protected TextView mTvMessages;
+	protected TextView mTvMessage;
 	protected int mPWMValue;
 	
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -67,7 +67,7 @@ public class MainControlFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.main_control, container, false);
-		
+		mTvMessage = (TextView)v.findViewById(R.id.tvMessage);
 		mSeekPWM = (SeekBar)v.findViewById(R.id.seekPWM);
 		mTvPWM = (TextView)v.findViewById(R.id.tvPWM);
 		mTvPWM.setText("0%");
@@ -120,6 +120,8 @@ public class MainControlFragment extends Fragment {
 			   if(mService != null) {
 				   mTvRPM.setText(String.valueOf(mService.getRPM()));
 				   mService.setPWM(mPWMValue);
+				   mTvMessage.setText(mService.getMessage());
+				   //mService.getMessage();
 			   }
 		       handler.postDelayed(this, 100);
 		   }

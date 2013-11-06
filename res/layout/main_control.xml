@@ -53,4 +53,14 @@
         android:layout_alignParentBottom="true"
         android:layout_alignRight="@+id/btnCalibrate"
         android:text="@string/btn_exit_text" />
+
+    <TextView
+        android:id="@+id/tvMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tvPWM"
+        android:layout_alignRight="@+id/tvRPM"
+        android:layout_below="@+id/tvPWM"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
 </RelativeLayout>

@@ -1,7 +1,5 @@
 package com.srenner.ioiofan;
 
-import javax.xml.datatype.Duration;
-
 import ioio.lib.api.PulseInput;
 import ioio.lib.api.PwmOutput;
 import ioio.lib.api.DigitalInput.Spec;
@@ -29,6 +27,7 @@ public class FanService extends IOIOService {
 	private LoopMode mLoopMode;
 	private boolean mDoStop = false;
 	private Handler mHandler;
+	private String mMessage = "";
 	
 	@Override
 	protected IOIOLooper createIOIOLooper() {
@@ -40,10 +39,12 @@ public class FanService extends IOIOService {
 			protected void setup() throws ConnectionLostException, InterruptedException {
 				mPWM = ioio_.openPwmOutput(1, 25000);
 				mTachSignal = ioio_.openPulseInput(new Spec(2), ClockRate.RATE_62KHz, PulseMode.FREQ, true);
+				mMessage = "IOIO connection established";
 			}
 			
 			@Override
 			public void loop() throws ConnectionLostException, InterruptedException {
+				try {
 				switch(mLoopMode) {
 					case CALIBRATE: {
 						calibrate();
@@ -62,30 +63,32 @@ public class FanService extends IOIOService {
 					}
 				}
 				Thread.sleep(100);
+				}
+				catch(Exception ex) {
+					mMessage = ex.getMessage();
+				}
 			}
 			
 			private void calibrate() {
 				try {
 					mPWM.setPulseWidth(0);
-
 					final int settleDuration = 10000;
-					
 					mHandler.post(new Runnable() {
 						@Override
 						public void run() {
-							Toast.makeText(FanService.this, "Wait for fan to settle", Toast.LENGTH_LONG).show();
+							mMessage = "Waiting for fan to settle";
 						}
 					});
-					
 					Thread.sleep(settleDuration); // let RPM settle
-					
-					
+					mMessage = "Calibration complete";
 				} catch (ConnectionLostException e) {
 					// ioio lost connection
 					e.printStackTrace();
+					mMessage = e.getMessage();
 				} catch (InterruptedException e) {
 					// sleep was interrupted
 					e.printStackTrace();
+					mMessage = e.getMessage();
 				}
 			}
 		};
@@ -109,6 +112,10 @@ public class FanService extends IOIOService {
 
 	public void setLoopMode(LoopMode loopMode) {
 		mLoopMode = loopMode;
+	}
+	
+	public String getMessage() {
+		return mMessage;
 	}
 	
 	public void stop() {
@@ -135,7 +142,6 @@ public class FanService extends IOIOService {
 
 	private void handleStartup(Intent intent) {
 		mHandler = new Handler();
-		Toast.makeText(this, "Service Starting", Toast.LENGTH_SHORT).show();
 		NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		if (intent != null && intent.getAction() != null
 				&& intent.getAction().equals("stop")) {
