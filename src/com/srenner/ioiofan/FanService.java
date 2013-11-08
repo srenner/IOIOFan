@@ -72,21 +72,32 @@ public class FanService extends IOIOService {
 			private void calibrate() {
 				try {
 					mPWM.setPulseWidth(0);
-					final int settleDuration = 10000;
 					mHandler.post(new Runnable() {
 						@Override
 						public void run() {
 							mMessage = "Waiting for fan to settle";
 						}
 					});
-					Thread.sleep(settleDuration); // let RPM settle
-					mMessage = "Calibration complete";
+					int previousRPM = Math.round(mTachSignal.getFrequency() * 30);
+					mCurrentRPM = previousRPM;
+					for(int i = 0; i < 10; i++) {
+						
+						Thread.sleep(1000);
+						mCurrentRPM = Math.round(mTachSignal.getFrequency() * 30);
+						if((mCurrentRPM * 1.02) >= previousRPM) {
+							Thread.sleep(1000); // for extra settling beyond the % threshold
+							int baselineSpeed = Math.round(mTachSignal.getFrequency() * 30);
+							mMessage = "Fan settled at " + String.valueOf(baselineSpeed);
+							break;
+						}
+						else {
+							previousRPM = mCurrentRPM;
+						}
+					}
 				} catch (ConnectionLostException e) {
-					// ioio lost connection
 					e.printStackTrace();
 					mMessage = e.getMessage();
 				} catch (InterruptedException e) {
-					// sleep was interrupted
 					e.printStackTrace();
 					mMessage = e.getMessage();
 				}
