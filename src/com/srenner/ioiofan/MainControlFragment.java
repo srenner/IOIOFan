@@ -92,11 +92,9 @@ public class MainControlFragment extends Fragment {
 		
 		Context applicationContext = getActivity().getApplicationContext();
 		Intent intent = new Intent(applicationContext, FanService.class);
-		//PendingIntent pi = PendingIntent.getActivity(this, 0, intent, 0);
 		PendingIntent pi = PendingIntent.getService(applicationContext, 0, intent, 0);
 		
 		try {
-			//NotificationManager nm = (NotificationManager) applicationContext.getSystemService(Context.NOTIFICATION_SERVICE);
 			Notification notification = new NotificationCompat.Builder(applicationContext)
 			.setSmallIcon(R.drawable.ic_launcher)
 			.setContentTitle("IOIOFan")
@@ -104,11 +102,8 @@ public class MainControlFragment extends Fragment {
 			.setContentIntent(pi)
 			.build();
 			notification.flags |= Notification.FLAG_ONGOING_EVENT;
-			//nm.notify(1, notification);
-			//mService.startForeground(1, notification);
 			applicationContext.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 			applicationContext.startService(intent);
-			
 		}
 		catch(Exception ex) {
 		}
@@ -121,7 +116,6 @@ public class MainControlFragment extends Fragment {
 				   mTvRPM.setText(String.valueOf(mService.getRPM()));
 				   mService.setPWM(mPWMValue);
 				   mTvMessage.setText(mService.getMessage());
-				   //mService.getMessage();
 			   }
 		       handler.postDelayed(this, 100);
 		   }
@@ -132,7 +126,6 @@ public class MainControlFragment extends Fragment {
 
 			@Override
 			public void onClick(View arg0) {
-				// TODO call calibrate code from here
 				mService.setLoopMode(LoopMode.CALIBRATE);
 			}
 		});
@@ -149,7 +142,6 @@ public class MainControlFragment extends Fragment {
 				getActivity().finish();
 			}
 		});
-		
 		return v;
 	}
 }

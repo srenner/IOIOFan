@@ -132,7 +132,6 @@ public class FanService extends IOIOService {
 	public void stop() {
 		mDoStop = true;
 		stopForeground(true);
-		//stopSelf();
 	}
 	
 	@Override
@@ -172,7 +171,6 @@ public class FanService extends IOIOService {
 				.build();
 			notification.flags |= Notification.FLAG_ONGOING_EVENT;
 			startForeground(1, notification);
-//			nm.notify(0, notification);
 		}		
 	}
 	
@@ -191,6 +189,4 @@ public class FanService extends IOIOService {
     public IBinder onBind(Intent intent) {
         return mBinder;
     }
-
-
 }
