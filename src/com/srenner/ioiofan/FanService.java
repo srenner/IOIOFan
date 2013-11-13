@@ -59,6 +59,7 @@ public class FanService extends IOIOService {
 						mCurrentRPM = Math.round(mTachSignal.getFrequency() * 30);
 						if(mDoStop) {
 							disconnected();
+							//throw new ConnectionLostException();
 						}
 					}
 				}
@@ -70,6 +71,7 @@ public class FanService extends IOIOService {
 			}
 			
 			private void calibrate() {
+				int baselineSpeed = 0;
 				try {
 					mPWM.setPulseWidth(0);
 					mHandler.post(new Runnable() {
@@ -86,7 +88,7 @@ public class FanService extends IOIOService {
 						mCurrentRPM = Math.round(mTachSignal.getFrequency() * 30);
 						if((mCurrentRPM * 1.02) >= previousRPM) {
 							Thread.sleep(1000); // for extra settling beyond the % threshold
-							int baselineSpeed = Math.round(mTachSignal.getFrequency() * 30);
+							baselineSpeed = Math.round(mTachSignal.getFrequency() * 30);
 							mMessage = "Fan settled at " + String.valueOf(baselineSpeed);
 							break;
 						}
@@ -94,6 +96,15 @@ public class FanService extends IOIOService {
 							previousRPM = mCurrentRPM;
 						}
 					}
+					int[] speedMatrix = new int[100];
+					speedMatrix[0] = baselineSpeed;
+					for(int i = 1; i < 100; i++) {
+						mPWM.setPulseWidth(i);
+						Thread.sleep(200);
+						speedMatrix[i] = Math.round(mTachSignal.getFrequency() * 30);
+					}
+					String stopHere = "breakpoint";
+					
 				} catch (ConnectionLostException e) {
 					e.printStackTrace();
 					mMessage = e.getMessage();
