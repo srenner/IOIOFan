@@ -45,25 +45,24 @@ public class FanService extends IOIOService {
 			@Override
 			public void loop() throws ConnectionLostException, InterruptedException {
 				try {
-				switch(mLoopMode) {
-					case CALIBRATE: {
-						calibrate();
-						mLoopMode = LoopMode.NORMAL;
-						break;
-					}
-					case NORMAL: {
-						// fall through
-					}
-					default: {
-						mPWM.setPulseWidth(mCurrentPWM);
-						mCurrentRPM = Math.round(mTachSignal.getFrequency() * 30);
-						if(mDoStop) {
-							disconnected();
-							//throw new ConnectionLostException();
+					switch(mLoopMode) {
+						case CALIBRATE: {
+							calibrate();
+							mLoopMode = LoopMode.NORMAL;
+							break;
+						}
+						case NORMAL: {
+							// fall through
+						}
+						default: {
+							mPWM.setPulseWidth(mCurrentPWM);
+							mCurrentRPM = Math.round(mTachSignal.getFrequency() * 30);
+							if(mDoStop) {
+								disconnected();
+							}
 						}
 					}
-				}
-				Thread.sleep(100);
+					Thread.sleep(100);
 				}
 				catch(Exception ex) {
 					mMessage = ex.getMessage();
@@ -96,13 +95,20 @@ public class FanService extends IOIOService {
 							previousRPM = mCurrentRPM;
 						}
 					}
-					int[] speedMatrix = new int[100];
+					
+					int maxRPM;
+					int maxPWM;
+					int[] speedMatrix = new int[101];
+					double[] diffMatrix = new double[101];
 					speedMatrix[0] = baselineSpeed;
-					for(int i = 1; i < 100; i++) {
+					for(int i = 1; i <= 100; i++) {
 						mPWM.setPulseWidth(i);
-						Thread.sleep(200);
+						Thread.sleep(300);
 						speedMatrix[i] = Math.round(mTachSignal.getFrequency() * 30);
+						diffMatrix[i] = (double)speedMatrix[i-1]/(double)speedMatrix[i];
+						
 					}
+					@SuppressWarnings("unused")
 					String stopHere = "breakpoint";
 					
 				} catch (ConnectionLostException e) {
