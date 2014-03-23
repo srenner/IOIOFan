@@ -1,5 +1,5 @@
 package com.srenner.ioiofan;
 
 public enum LoopMode {
-	NORMAL, CALIBRATE
+	NORMAL, CALIBRATE, STOP
 }

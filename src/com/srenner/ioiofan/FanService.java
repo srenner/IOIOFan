@@ -1,5 +1,6 @@
 package com.srenner.ioiofan;
 
+import ioio.lib.api.DigitalOutput;
 import ioio.lib.api.PulseInput;
 import ioio.lib.api.PwmOutput;
 import ioio.lib.api.DigitalInput.Spec;
@@ -25,7 +26,6 @@ public class FanService extends IOIOService {
 	private int mCurrentRPM = 0;
 	private int mCurrentPWM = 0;
 	private LoopMode mLoopMode;
-	private boolean mDoStop = false;
 	private Handler mHandler;
 	private String mMessage = "";
 	
@@ -34,22 +34,34 @@ public class FanService extends IOIOService {
 		return new BaseIOIOLooper() {
 			private PwmOutput mPWM;
 			private PulseInput mTachSignal;
+			private DigitalOutput mStatusLED;
+			private boolean ledOn = false;
 	
 			@Override
 			protected void setup() throws ConnectionLostException, InterruptedException {
 				mPWM = ioio_.openPwmOutput(1, 25000);
 				mTachSignal = ioio_.openPulseInput(new Spec(2), ClockRate.RATE_62KHz, PulseMode.FREQ, true);
 				mMessage = "IOIO connection established";
+				mStatusLED = ioio_.openDigitalOutput(0, true);
 			}
 			
 			@Override
 			public void loop() throws ConnectionLostException, InterruptedException {
+				ledOn = !ledOn;
 				try {
+					mStatusLED.write(ledOn);
 					switch(mLoopMode) {
 						case CALIBRATE: {
 							calibrate();
 							mLoopMode = LoopMode.NORMAL;
 							break;
+						}
+						case STOP: {
+							//ioio_.waitForDisconnect();
+							ioio_.disconnect();
+							stopForeground(true);
+							return;
+							
 						}
 						case NORMAL: {
 							// fall through
@@ -57,9 +69,6 @@ public class FanService extends IOIOService {
 						default: {
 							mPWM.setPulseWidth(mCurrentPWM);
 							mCurrentRPM = Math.round(mTachSignal.getFrequency() * 30);
-							if(mDoStop) {
-								disconnected();
-							}
 						}
 					}
 					Thread.sleep(100);
@@ -140,16 +149,13 @@ public class FanService extends IOIOService {
 
 	public void setLoopMode(LoopMode loopMode) {
 		mLoopMode = loopMode;
+		//mMessage = loopMode.name();
 	}
 	
 	public String getMessage() {
 		return mMessage;
 	}
 	
-	public void stop() {
-		mDoStop = true;
-		stopForeground(true);
-	}
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
@@ -188,6 +194,7 @@ public class FanService extends IOIOService {
 				.build();
 			notification.flags |= Notification.FLAG_ONGOING_EVENT;
 			startForeground(1, notification);
+			setLoopMode(LoopMode.NORMAL);
 		}		
 	}
 	

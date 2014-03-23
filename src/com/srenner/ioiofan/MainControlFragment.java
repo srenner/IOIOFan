@@ -90,7 +90,7 @@ public class MainControlFragment extends Fragment {
 
 		});
 		
-		Context applicationContext = getActivity().getApplicationContext();
+		Context applicationContext = getActivity();//.getApplicationContext();
 		Intent intent = new Intent(applicationContext, FanService.class);
 		PendingIntent pi = PendingIntent.getService(applicationContext, 0, intent, 0);
 		
@@ -104,6 +104,11 @@ public class MainControlFragment extends Fragment {
 			notification.flags |= Notification.FLAG_ONGOING_EVENT;
 			applicationContext.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 			applicationContext.startService(intent);
+			
+			
+			
+			//startService(intent);
+			//getActivity().startService(intent);
 		}
 		catch(Exception ex) {
 		}
@@ -136,7 +141,7 @@ public class MainControlFragment extends Fragment {
 			public void onClick(View arg0) {
 				if(mService != null) {
 					//mService.stopForeground(true);
-					mService.stop();
+					mService.setLoopMode(LoopMode.STOP);
 					//mService.stopSelf();
 				}
 				getActivity().finish();
