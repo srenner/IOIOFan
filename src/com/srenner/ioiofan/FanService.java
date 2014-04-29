@@ -110,8 +110,6 @@ public class FanService extends IOIOService {
 					int maxPWM = 1;
 					double delta = 0.0;
 					int stableCount = 0;
-					int[] speedMatrix = new int[101];
-					speedMatrix[0] = baselineSpeed;
 					int currentSpeed = baselineSpeed;
 					int previousSpeed = 0;
 					for(int i = 1; i <= 100; i++) {
