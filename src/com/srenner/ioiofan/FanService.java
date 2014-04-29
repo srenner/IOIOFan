@@ -6,7 +6,7 @@ import ioio.lib.api.PwmOutput;
 import ioio.lib.api.DigitalInput.Spec;
 import ioio.lib.api.PulseInput.ClockRate;
 import ioio.lib.api.PulseInput.PulseMode;
-import ioio.lib.api.SpiMaster;
+//import ioio.lib.api.SpiMaster;
 import ioio.lib.api.exception.ConnectionLostException;
 import ioio.lib.util.BaseIOIOLooper;
 import ioio.lib.util.IOIOLooper;
@@ -37,7 +37,7 @@ public class FanService extends IOIOService {
 			private PulseInput mTachSignal;
 			private DigitalOutput mStatusLED;
 			private boolean ledOn = false;
-			private SpiMaster mSpi;
+			//private SpiMaster mSpi;
 	
 			@Override
 			protected void setup() throws ConnectionLostException, InterruptedException {
@@ -45,16 +45,13 @@ public class FanService extends IOIOService {
 				mTachSignal = ioio_.openPulseInput(new Spec(2), ClockRate.RATE_62KHz, PulseMode.FREQ, true);
 				mMessage = "IOIO connection established";
 				mStatusLED = ioio_.openDigitalOutput(0, true);
-				
-				mSpi = ioio_.openSpiMaster(12, 13, 10, 11, SpiMaster.Rate.RATE_1M);
-				
+				//mSpi = ioio_.openSpiMaster(12, 13, 10, 11, SpiMaster.Rate.RATE_1M);
 			}
 			
 			@Override
 			public void loop() throws ConnectionLostException, InterruptedException {
 				ledOn = !ledOn;
 				try {
-					//mSpi.w
 					mStatusLED.write(ledOn);
 					switch(mLoopMode) {
 						case CALIBRATE: {
@@ -67,7 +64,6 @@ public class FanService extends IOIOService {
 							ioio_.disconnect();
 							stopForeground(true);
 							return;
-							
 						}
 						case NORMAL: {
 							// fall through
