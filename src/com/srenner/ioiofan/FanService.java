@@ -111,22 +111,19 @@ public class FanService extends IOIOService {
 						}
 					}
 					
-					int maxRPM = baselineSpeed;
 					int maxPWM = 1;
 					double delta = 0.0;
 					int stableCount = 0;
 					int[] speedMatrix = new int[101];
-					double[] diffMatrix = new double[101];
 					speedMatrix[0] = baselineSpeed;
+					int currentSpeed = baselineSpeed;
+					int previousSpeed = 0;
 					for(int i = 1; i <= 100; i++) {
 						mPWM.setPulseWidth(i);
 						Thread.sleep(300);
-						speedMatrix[i] = Math.round(mTachSignal.getFrequency() * 30);
-						diffMatrix[i] = (double)speedMatrix[i-1]/(double)speedMatrix[i];
-						
-						maxRPM = speedMatrix[i];
-						delta = (double)speedMatrix[i-1]/(double)speedMatrix[i];
-
+						previousSpeed = currentSpeed;
+						currentSpeed = Math.round(mTachSignal.getFrequency() * 30);
+						delta = (double)previousSpeed/(double)currentSpeed;
 						if(delta > 0.99) {
 							stableCount++;
 							if(stableCount == 5) {
@@ -140,6 +137,8 @@ public class FanService extends IOIOService {
 					}
 					@SuppressWarnings("unused")
 					String stopHere = "breakpoint";
+					
+					mMessage = "Calibration - max RPM " + String.valueOf(currentSpeed) + " at " + String.valueOf(maxPWM) + "%";
 					
 				} catch (ConnectionLostException e) {
 					e.printStackTrace();
